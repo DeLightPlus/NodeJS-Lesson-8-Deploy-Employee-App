@@ -3,22 +3,20 @@ import axios from 'axios';
 
 import './App.css'
 
-import AddEmployee from './components/AddEmployee';
-import Header from './components/Header';
-import EmployeeList from './components/EmployeeList';
+import Dashboard from './components/Dashboard/Dashboard';
 
 
 function App() 
-{  
+{    
+  const base_url ="https://nodejs-lesson-8-server.onrender.com"; // http://localhost:8000
   const [employees, setEmployees] = useState([]);
   const get_users = async () => 
     {
       try 
       {
-          const response = await axios.get("https://nodejs-lesson-8-server.onrender.com/api/employees");
+          const response = await axios.get(`${base_url}/api/employees`);
           const data = response.data;
-          console.log(data);
-          
+          console.log(data);          
           setEmployees(data);
       } 
       catch (error) 
@@ -32,15 +30,9 @@ function App()
     }, []);
 
   return (
-    <div className='EmployeeApp'>      
-      
-      <Header />
-      <hr/>     
-
-      <div className='Employees'>
-        <AddEmployee />
-        <EmployeeList employees={ employees }/>
-      </div>
+    <div className='EmployeeApp'>  
+      {console.log(employees)}    
+      <Dashboard employees={employees} />       
     </div>
     
 

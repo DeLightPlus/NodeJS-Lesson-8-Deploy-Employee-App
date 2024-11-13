@@ -19,23 +19,18 @@ const Header = () => {
 
     return (
         <header className="header">
-            <div className="container">
-                <nav className="navbar">
-                    <div className="logo">
-                        {/* <a href="#" title="">
-                            <img src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg" alt="Logo" />
-                        </a> */}
-                        Employee App
-                    </div>                   
+            <p>Dashboard/Employees</p>
+            
+            <nav className="navbar">                                      
 
                     <div className="nav-links">
                         <a href="#" className="nav-link">
-                            <input
-                                type="text"
-                                onChange={inputHandler}
-                                placeholder='Search'
+                            <input className='search-input' 
+                                type="text" 
+                                placeholder="Search..."                                 
                                 value={searchQuery}
-                            />
+                                onChange={inputHandler} 
+                            />                 
                         </a>                        
                     </div>
 
@@ -43,8 +38,12 @@ const Header = () => {
                         <a href="#" className="nav-link">Sign up</a>
                         <a href="#" className="nav-link">Sign in</a>
                     </div>
-                </nav>                
-            </div>
+
+                    <div className="auth-links">
+                        <a href="#" className="nav-link">logout</a>
+                    </div>
+            </nav>                
+          
         </header>
     );
 };

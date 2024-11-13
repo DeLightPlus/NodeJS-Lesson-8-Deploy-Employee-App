@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const EmployeeCard = ({ employee }) => {
+const EmployeeCard = ({ employee }) => 
+{
+  const base_url ="https://nodejs-lesson-8-server.onrender.com"; // http://localhost:8000
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({
     name: employee.name,
@@ -21,7 +24,7 @@ const EmployeeCard = ({ employee }) => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:8000/api/employees/${employee.id}`, editedEmployee);
+      const response = await axios.put(`${base_url}/api/employees/${employee.id}`, editedEmployee);
       console.log("Employee updated:", response.data.message);
       setIsModalOpen(false);
       window.location.reload(); // Refresh to see changes
@@ -33,7 +36,7 @@ const EmployeeCard = ({ employee }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/employees/${employee.id}`);
+      await axios.delete(`${base_url}/api/employees/${employee.id}`);
       console.log("deleted");
       window.location.reload();
     } catch (error) {
@@ -56,7 +59,7 @@ const EmployeeCard = ({ employee }) => {
 
         try 
         {
-            const response = await axios.patch(`/api/employees/${employee.id}`, formData, {
+            const response = await axios.patch(`${base_url}/api/employees/${employee.id}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
@@ -83,9 +86,10 @@ const EmployeeCard = ({ employee }) => {
               alt="Preview" 
               style={{ height: "128px", width: "128px", objectFit: "cover" }} 
             />
-            <input type='file' 
-             style={{ width: "128px", height: "32px" }} 
-             onChange={(e)=>{ onAvatarChange(e) }}
+
+            <input className='card-img-inp'
+              type='file'              
+              onChange={(e)=>{ onAvatarChange(e) }}
             />
           </div>
 
@@ -100,52 +104,71 @@ const EmployeeCard = ({ employee }) => {
             </div>
           </div>
         </div>
-
-        {employee.imageUrl && (
-          <div className="button_group">
-            <button onClick={() => setIsModalOpen(true)}>Edit</button>
-            <button onClick={handleDelete}>Delete</button>
-          </div>
-        )}
+        <div className="button_group">
+        {
+          employee.imageUrl && 
+          (
+            <>
+              <button onClick={() => setIsModalOpen(true)}>Edit</button>
+              <button onClick={handleDelete}>Delete</button>
+            </>
+          )
+        }
+        </div>
       </div>
 
       {/* Modal for editing employee */}
-      {isModalOpen && (
+      {
+        isModalOpen && (
         <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
-            <h2>Edit Employee</h2>
-            <form onSubmit={(e) => { e.preventDefault(); handleEdit(); }}>
-              <input
-                type="text"
-                value={editedEmployee.name}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, name: e.target.value })}
-                placeholder="Name"
-                required
-              />
-              <input
-                type="text"
-                value={editedEmployee.position}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, position: e.target.value })}
-                placeholder="Position"
-                required
-              />
-              <input
-                type="email"
-                value={editedEmployee.email}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, email: e.target.value })}
-                placeholder="Email"
-                required
-              />
-              <input
-                type="text"
-                value={editedEmployee.phone}
-                onChange={(e) => setEditedEmployee({ ...editedEmployee, phone: e.target.value })}
-                placeholder="Phone"
-                required
-              />
-              <button type="submit">Save Changes</button>
-            </form>
+          <div className="EditEmployee">
+            <span className="close-modal-btn" onClick={() => setIsModalOpen(false)}>&times;</span>
+            
+            <div className="form-container">
+              <h2>Update Employee Details</h2>
+              <form onSubmit={(e) => { e.preventDefault(); handleEdit(); }}>
+                <label htmlFor="">Full name: 
+                  <input
+                    type="text"
+                    value={editedEmployee.name}
+                    onChange={(e) => setEditedEmployee({ ...editedEmployee, name: e.target.value })}
+                    placeholder="Name"
+                    required
+                  />
+                </label>
+
+                <label htmlFor="">Position
+                  <input
+                    type="text"
+                    value={editedEmployee.position}
+                    onChange={(e) => setEditedEmployee({ ...editedEmployee, position: e.target.value })}
+                    placeholder="Position"
+                    required
+                  />
+                </label>
+
+                <label htmlFor="">Email
+                  <input
+                    type="email"
+                    value={editedEmployee.email}
+                    onChange={(e) => setEditedEmployee({ ...editedEmployee, email: e.target.value })}
+                    placeholder="Email"
+                    required
+                  />
+                </label>
+
+                <label htmlFor="">Phone:
+                  <input
+                    type="text"
+                    value={editedEmployee.phone}
+                    onChange={(e) => setEditedEmployee({ ...editedEmployee, phone: e.target.value })}
+                    placeholder="Phone"
+                    required
+                  />
+                </label>
+                <button type="submit">Save Changes</button>
+              </form>
+            </div>
           </div>
         </div>
       )}

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./employees.css";
 import EmployeeCard from "./EmployeeCard";
 
-function AddEmployee() {
+
+function AddEmployee({setOpenAddModal}) 
+{
     const [employeeId, setEmployeeId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmailAddress] = useState("");
@@ -13,29 +16,31 @@ function AddEmployee() {
 
     const [position, setPosition] = useState("");
     const [submittedData, setSubmittedData] = useState(null);
-    const [employees, setEmployees] = useState([]);
+    
     const [errors, setErrors] = useState({});
 
-    const handleSubmits = async (e) => {
+    const handleSubmits = async (e) => 
+    {
         e.preventDefault();
 
         const employee = { employeeId, name, email, phone, position, image };
+        const base_url ="https://nodejs-lesson-8-server.onrender.com"; // http://localhost:8000
         
-        try {
+        try 
+        {
             
-            const response = await axios.post("http://localhost:8000/api/employees", employee , 
+            const response = await axios.post(`${base_url}/api/employees`, employee , 
                 {
                     headers: { "Content-Type": "multipart/form-data", }
             }); 
+            
             const data = response.data;
             setSubmittedData(employee);
             clearForm();
         } catch (error) {
             console.error("Error adding employee:", error);
         }
-    };
-
-    
+    };    
 
     const handleImageChange = (e) => {
         if (e.target.files[0]) {
@@ -65,27 +70,35 @@ function AddEmployee() {
         setErrors({});
     };
 
-    const get_users = async () => {
-        try {
-            const response = await axios.get("http://localhost:8000/api/employees");
-            const data = response.data;
-            setEmployees(data);
-        } catch (error) {
-            console.error("Error fetching employees:", error);
-        }
-    };
-
-    useEffect(() => {
-        get_users();
-    }, [employees]);
-
     return (
         <div className="AddEmployees">
+            <button 
+                className="close-modal-btn" 
+                onClick={() => setOpenAddModal(false)}>
+                    Close
+            </button>
             <EmployeeCard employee={{ employeeId, name, email, phone, position, img_url }} />
             <div className="form-container">
                 <h2>Add Employee</h2><hr/>
                 {/* {console.log(image,' vs url:', img_url) } */}
                 <form onSubmit={handleSubmits}>
+                    <label className="image_preview">                        
+                        {
+                            img_url && (
+                                <div>
+                                    <h3>Preview:</h3>
+                                    <img src={img_url} alt="Preview" style={{ height:"64px", width:"64px",  objectFit: "cover" }} />
+                                </div>
+                            )
+                        }
+                        <div>Image: 
+                        <input
+                            type="file"
+                            onChange={handleImageChange}
+                        /></div>
+                        
+                    </label>
+                    
                     <label>
                         ID:
                         <input
@@ -97,7 +110,7 @@ function AddEmployee() {
                     </label>
                     
                     <label>
-                        Enter your name:
+                        Full name:
                         <input
                             type="text"
                             value={name}
@@ -124,24 +137,7 @@ function AddEmployee() {
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
                         {errors.phone && <span>{errors.phone }</span>}
-                    </label>
-
-                    <label className="image_preview">                        
-                        {
-                            img_url && (
-                                <div>
-                                    <h3>Preview:</h3>
-                                    <img src={img_url} alt="Preview" style={{ height:"64px", width:"64px",  objectFit: "cover" }} />
-                                </div>
-                            )
-                        }
-                        <div>Image: 
-                        <input
-                            type="file"
-                            onChange={handleImageChange}
-                        /></div>
-                        
-                    </label>
+                    </label>                   
 
                     <label>
                         Employee position:
@@ -153,7 +149,7 @@ function AddEmployee() {
                         {errors.position && <span>{errors.position}</span>}
                     </label>                    
 
-                    <button className="addemployee_btn" type="submit">
+                    <button className="add-employee-btn" type="submit">
                         Submit
                     </button>
 
